@@ -57,3 +57,24 @@ test("Select all specialties", async ({ page }) => {
     "surgery, radiology, dentistry, new specialty "
   );
 });
+
+test("Unselect all specialties", async ({ page }) => {
+  const veterinarianLinda = page.locator("tr", {
+    has: page.getByText(" Linda Douglas "),
+  });
+  await veterinarianLinda.getByRole("button", { name: "Edit Vet" }).click();
+
+  const selectedSpecialtiesDropdown = page.locator(
+    ".dropdown-display .selected-specialties"
+  );
+  await expect(selectedSpecialtiesDropdown).toContainText("dentistry, surgery");
+  await selectedSpecialtiesDropdown.click();
+
+  const allSpecialtiesCheckboxes = page.getByRole("checkbox");
+  for (const box of await allSpecialtiesCheckboxes.all()) {
+    await box.uncheck();
+    expect(await box.isChecked()).toBeFalsy();
+  }
+
+  await expect(selectedSpecialtiesDropdown).toContainText("");
+});
