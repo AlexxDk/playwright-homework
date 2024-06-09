@@ -10,10 +10,12 @@ test.beforeEach(async ({ page }) => {
 test("Validate selected specialties", async ({ page }) => {
   await expect(page.locator("h2")).toHaveText("Veterinarians");
 
-  const veterinarianHelen = page.locator("tr", {
-    has: page.getByText(" Helen Leary "),
-  });
-  await veterinarianHelen.getByRole("button", { name: "Edit Vet" }).click();
+  await page
+    .locator("tr", {
+      has: page.getByText(" Helen Leary "),
+    })
+    .getByRole("button", { name: "Edit Vet" })
+    .click();
 
   const selectedSpecialtiesDropdown = page.locator(
     ".dropdown-display .selected-specialties"
@@ -36,10 +38,12 @@ test("Validate selected specialties", async ({ page }) => {
 });
 
 test("Select all specialties", async ({ page }) => {
-  const veterinarianRafael = page.locator("tr", {
-    has: page.getByText(" Rafael Ortega "),
-  });
-  await veterinarianRafael.getByRole("button", { name: "Edit Vet" }).click();
+  await page
+    .locator("tr", {
+      has: page.getByText(" Rafael Ortega "),
+    })
+    .getByRole("button", { name: "Edit Vet" })
+    .click();
 
   const selectedSpecialtiesDropdown = page.locator(
     ".dropdown-display .selected-specialties"
@@ -59,10 +63,12 @@ test("Select all specialties", async ({ page }) => {
 });
 
 test("Unselect all specialties", async ({ page }) => {
-  const veterinarianLinda = page.locator("tr", {
-    has: page.getByText(" Linda Douglas "),
-  });
-  await veterinarianLinda.getByRole("button", { name: "Edit Vet" }).click();
+  await page
+    .locator("tr", {
+      has: page.getByText(" Linda Douglas "),
+    })
+    .getByRole("button", { name: "Edit Vet" })
+    .click();
 
   const selectedSpecialtiesDropdown = page.locator(
     ".dropdown-display .selected-specialties"
@@ -76,5 +82,5 @@ test("Unselect all specialties", async ({ page }) => {
     expect(await box.isChecked()).toBeFalsy();
   }
 
-  await expect(selectedSpecialtiesDropdown).toContainText("");
+  await expect(selectedSpecialtiesDropdown).toBeEmpty();
 });
