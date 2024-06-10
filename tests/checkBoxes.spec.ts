@@ -10,16 +10,9 @@ test.beforeEach(async ({ page }) => {
 test("Validate selected specialties", async ({ page }) => {
   await expect(page.locator("h2")).toHaveText("Veterinarians");
 
-  await page
-    .locator("tr", {
-      has: page.getByText(" Helen Leary "),
-    })
-    .getByRole("button", { name: "Edit Vet" })
-    .click();
+  await page.locator("tr", { has: page.getByText(" Helen Leary ") }).getByRole("button", { name: "Edit Vet" }).click();
 
-  const selectedSpecialtiesDropdown = page.locator(
-    ".dropdown-display .selected-specialties"
-  );
+  const selectedSpecialtiesDropdown = page.locator(".dropdown-display .selected-specialties");
   await expect(selectedSpecialtiesDropdown).toContainText("radiology");
   await selectedSpecialtiesDropdown.click();
 
@@ -38,16 +31,9 @@ test("Validate selected specialties", async ({ page }) => {
 });
 
 test("Select all specialties", async ({ page }) => {
-  await page
-    .locator("tr", {
-      has: page.getByText(" Rafael Ortega "),
-    })
-    .getByRole("button", { name: "Edit Vet" })
-    .click();
+  await page.locator("tr", { has: page.getByText(" Rafael Ortega ") }).getByRole("button", { name: "Edit Vet" }).click();
 
-  const selectedSpecialtiesDropdown = page.locator(
-    ".dropdown-display .selected-specialties"
-  );
+  const selectedSpecialtiesDropdown = page.locator(".dropdown-display .selected-specialties");
   await expect(selectedSpecialtiesDropdown).toContainText("surgery");
   await selectedSpecialtiesDropdown.click();
 
@@ -57,22 +43,13 @@ test("Select all specialties", async ({ page }) => {
     expect(await box.isChecked()).toBeTruthy();
   }
 
-  await expect(selectedSpecialtiesDropdown).toContainText(
-    "surgery, radiology, dentistry, new specialty "
-  );
+  await expect(selectedSpecialtiesDropdown).toContainText("surgery, radiology, dentistry, new specialty ");
 });
 
 test("Unselect all specialties", async ({ page }) => {
-  await page
-    .locator("tr", {
-      has: page.getByText(" Linda Douglas "),
-    })
-    .getByRole("button", { name: "Edit Vet" })
-    .click();
+  await page.locator("tr", { has: page.getByText(" Linda Douglas ") }).getByRole("button", { name: "Edit Vet" }).click();
 
-  const selectedSpecialtiesDropdown = page.locator(
-    ".dropdown-display .selected-specialties"
-  );
+  const selectedSpecialtiesDropdown = page.locator(".dropdown-display .selected-specialties");
   await expect(selectedSpecialtiesDropdown).toContainText("dentistry, surgery");
   await selectedSpecialtiesDropdown.click();
 
