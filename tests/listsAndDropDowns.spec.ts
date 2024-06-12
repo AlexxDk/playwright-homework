@@ -16,15 +16,11 @@ test('Validate selected pet types from the list', async ({ page }) => {
     await expect(page.locator('#owner_name')).toHaveValue('George Franklin')
     await expect(page.locator('#type1')).toHaveValue('cat')
 
-    await page.locator('#type').click()
-
     const pettypeItems = await page.locator("#type option").allTextContents();
 
     for (const pettypeItem of pettypeItems) {
         await page.locator('#type').selectOption(pettypeItem)
         await expect(page.locator('#type1')).toHaveValue(pettypeItem)
-
-        await page.locator('#type').click()
     }
 })
 
@@ -34,21 +30,24 @@ test('Validate the pet type update', async ({ page }) => {
     const visitRosy = page.locator('td', { has: page.getByText('Rosy') })
     await visitRosy.getByRole('button', { name: "Edit Pet" }).click()
     await expect(page.locator('#name')).toHaveValue('Rosy')
-    await expect(page.locator('#type1')).toHaveValue('dog')
+    const typeInput = page.locator('#type1')
+    await expect(typeInput).toHaveValue('dog')
 
-    await page.locator('#type').click()
-    await page.locator('#type').selectOption('bird')
-    await expect(page.locator('#type1')).toHaveValue('bird')
+    const typeDropdown = page.locator('#type')
+    await typeDropdown.click()
+    await typeDropdown.selectOption('bird')
+    await expect(typeInput).toHaveValue('bird')
 
     await page.getByRole('button', { name: 'Update Pet' }).click()
-    await expect(visitRosy.locator('dd', {hasText: 'bird'})).toHaveText('bird')
+    const typeInTable = visitRosy.locator('.dl-horizontal dd').nth(2)
+    await expect(typeInTable).toHaveText('bird')
 
     await visitRosy.getByRole('button', { name: "Edit Pet" }).click()
-    await page.locator('#type').click()
-    await page.locator('#type').selectOption('dog')
-    await expect(page.locator('#type1')).toHaveValue('dog')
+    await typeDropdown.click()
+    await typeDropdown.selectOption('dog')
+    await expect(typeInput).toHaveValue('dog')
 
     await page.getByRole('button', { name: 'Update Pet' }).click()
-    await expect(visitRosy.locator('dd', {hasText: 'dog'})).toHaveText('dog')
+    await expect(typeInTable).toHaveText('dog')
 
 })
