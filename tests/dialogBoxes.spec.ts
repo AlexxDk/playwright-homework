@@ -15,13 +15,17 @@ test("Add and delete pet type", async ({ page }) => {
 
     await inputNewPetType.fill('pig')
     await page.getByRole('button', { name: "Save" }).click()
+    await expect(inputNewPetType).not.toBeVisible()
+    const lastInput = page.locator('[name="pettype_name"]').last()
+    await expect(lastInput).toHaveValue('pig')
 
     page.on('dialog', dialog => {
         expect(dialog.message()).toEqual('Delete the pet type?')
         dialog.accept()
     })
 
-    await page.locator('tr', { has: page.locator('[id="6"]') }).getByRole("button", { name: "Delete" }).click();
-    await expect(page.locator('[name="pettype_name"]').last()).not.toHaveValue('pig')
+    
+    await page.getByRole("button", { name: "Delete" }).last().click();
+    await expect(lastInput).not.toHaveValue('pig')
 
 });
