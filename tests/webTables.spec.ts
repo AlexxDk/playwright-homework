@@ -15,27 +15,20 @@ test.describe('OWNERS page', () => {
 
     test('Validate owners count of the Madison city', async ({ page }) => {
         await page.waitForSelector('tbody')
-        const allCitizensRows = page.locator('tbody tr', { has: page.locator('td').nth(2) })
-        let allMadisonCitizen = 0
-
-        for (const citizen of await allCitizensRows.all()) {
-            const cellValue = await citizen.locator('td').nth(2).textContent()
-            if (cellValue == 'Madison') {
-                allMadisonCitizen += 1
-            }
-        }
-        expect(allMadisonCitizen).toEqual(4)
+        await expect(page.getByRole('row',  {name: "Madison"})).toHaveCount(4)
     })
 
     test('Validate search by Last Name', async ({ page }) => {
+        await page.waitForSelector('table')
         const inputLastName = page.locator('#lastName')
-        await inputLastName.fill('Black')
         const buttonFindOwner = page.getByRole('button', { name: 'Find Owner' })
-        await buttonFindOwner.click()
-
-        await page.waitForTimeout(2000)
 
         const ownersListLoop = async (searchValue) => {
+            await inputLastName.clear()
+            await inputLastName.fill(searchValue)
+            await buttonFindOwner.click()
+            await page.waitForResponse(`https://petclinic-api.bondaracademy.com/petclinic/api/owners?lastName=${searchValue}`)
+
             if (searchValue == 'Playwright') {
                 expect(await page.locator('.xd-container div').last().textContent()).toContain(`No owners with LastName starting with "${searchValue}"`)
                 return;
@@ -49,26 +42,10 @@ test.describe('OWNERS page', () => {
             }
         }
 
-        ownersListLoop('Black')
-
-        await inputLastName.clear()
-        await inputLastName.fill('Davis')
-        await buttonFindOwner.click()
-        await page.waitForTimeout(2000)
-        ownersListLoop('Davis')
-
-        await inputLastName.clear()
-        await inputLastName.fill('Es')
-        await buttonFindOwner.click()
-        await page.waitForTimeout(2000)
-        ownersListLoop('Es')
-
-        await inputLastName.clear()
-        await inputLastName.fill('Playwright')
-        await buttonFindOwner.click()
-        await page.waitForTimeout(2000)
-        ownersListLoop('Playwright')
-
+        await ownersListLoop('Black')
+        await ownersListLoop('Davis')
+        await ownersListLoop('Es')
+        await ownersListLoop('Playwright')
 
     })
 
@@ -76,7 +53,7 @@ test.describe('OWNERS page', () => {
         const ownerRow = page.getByRole('row', { name: '6085552765' })
         const petName = await ownerRow.locator('td').last().textContent()
         await ownerRow.getByRole('link', { name: 'Peter McTavish' }).click()
-        await page.waitForTimeout(2000)
+        // await page.waitForTimeout(2000)
         expect(await page.locator('table').first().locator('tr td').last().textContent()).toContain('6085552765')
         expect(await page.locator('.dl-horizontal dd').first().textContent()).toContain(petName?.trim())
 
