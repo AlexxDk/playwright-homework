@@ -19,7 +19,6 @@ test.describe('OWNERS page', () => {
     })
 
     test('Validate search by Last Name', async ({ page }) => {
-        await page.waitForSelector('table')
         const inputLastName = page.locator('#lastName')
         const buttonFindOwner = page.getByRole('button', { name: 'Find Owner' })
 
