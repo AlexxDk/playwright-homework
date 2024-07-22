@@ -43,3 +43,75 @@ test('Select the desired date in the calendar', async ({ page }) => {
     await expect(petItem).toHaveCount(0)
 })
 
+test('Select the desired date in the calendar 2', async ({ page }) => {
+    await page.getByRole('link', { name: 'Jean Coleman' }).click()
+
+    const petItem = page.locator('td', { has: page.getByText('Samantha') })
+    const addVisitBtnOnTheOwnerPage = petItem.getByRole('button', { name: "Add Visit" })
+    await addVisitBtnOnTheOwnerPage.click()
+    await expect(page.locator('h2')).toHaveText('New Visit')
+    await expect(page.locator('tr', { has: page.getByText('Samantha') })).toContainText('Jean Coleman')
+
+    const calendarInputField = page.locator('[class="mat-mdc-button-touch-target"]')
+    await calendarInputField.click()
+    await page.locator('span.mat-calendar-body-today').click()
+
+    function formatDate(date, page = 'calendar') {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        if (page == 'visit') {
+            return `${year}/${month}/${day}`
+        } else if (page == 'owner') {
+            return `${year}-${month}-${day}`
+        }
+        return `${month} ${year}`
+
+    }
+
+    let date = new Date();
+    const formattedDateOnTheNewVisitPage = formatDate(date, 'visit');
+    const formattedDateOnTheOwnerPage = formatDate(date, 'owner');
+
+    await expect(page.locator('[name="date"]')).toHaveValue(formattedDateOnTheNewVisitPage)
+
+    await page.locator('#description').fill('dermatologists visit')
+    const addVisitBtnOnTheVisitPage = page.getByRole('button', { name: 'Add Visit' })
+    await addVisitBtnOnTheVisitPage.click()
+
+    const newVisitInfo = await page.locator('app-pet-list', { has: page.getByText('Samantha') }).locator('app-visit-list tr td').first()
+    await expect(newVisitInfo).toHaveText(formattedDateOnTheOwnerPage)
+    await addVisitBtnOnTheOwnerPage.click()
+
+    date.setDate(date.getDate() - 45)
+    const previousDate = date.getDate().toString()
+    const previousMonthAndDate = formatDate(date);
+
+    await page.locator('#description').fill('massage therapy')
+    await calendarInputField.click()
+    let calendarMonthAndYear = await page.locator('[aria-label="Choose month and year"]').textContent()
+
+    while (!calendarMonthAndYear?.includes(previousMonthAndDate)) {
+        await page.locator('[aria-label="Previous month"]').click()
+        calendarMonthAndYear = await page.locator('[aria-label="Choose month and year"]').textContent()
+    }
+
+    await page.locator('[class="mat-calendar-body-cell"]').getByText(previousDate, { exact: true }).click()
+    await addVisitBtnOnTheVisitPage.click()
+
+    const firstsRowElement = page.locator('app-pet-list', { has: page.getByText('Samantha') }).locator('app-visit-list').locator('tr', { has: page.getByText('dermatologists visit') })
+    const secondRowElement = page.locator('app-pet-list', { has: page.getByText('Samantha') }).locator('app-visit-list').locator('tr', { has: page.getByText('massage therapy') })
+    const firstDateValue = await firstsRowElement.locator('td').first().textContent()
+    const secondDateValue = await secondRowElement.locator('td').first().textContent()
+
+    if (firstDateValue && secondDateValue) {
+        const firstDate = new Date(firstDateValue);
+        const secondDate = new Date(secondDateValue);
+        expect(firstDate > secondDate).toBeTruthy();
+    }
+
+    await firstsRowElement.getByRole('button', { name: 'Delete Visit' }).click()
+    await secondRowElement.getByRole('button', { name: 'Delete Visit' }).click()
+
+})
