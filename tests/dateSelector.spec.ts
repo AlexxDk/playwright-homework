@@ -12,7 +12,6 @@ test('Select the desired date in the calendar', async ({ page }) => {
     await page.getByRole('button', { name: 'Add New Pet' }).click()
 
     const icon = page.locator('span.glyphicon.form-control-feedback').first()
-    await page.waitForTimeout(8000)
     await expect(icon).toHaveClass(/glyphicon-remove/)
     await page.locator('#name').fill('Tom')
     await expect(icon).toHaveClass(/glyphicon-ok/);
@@ -25,18 +24,17 @@ test('Select the desired date in the calendar', async ({ page }) => {
     const dateToAssert = `${searchYear}/${searchMonth}/${searchDay}`
 
     await page.getByLabel('Choose month and year').click()
-    let calendarHeader = await page.getByLabel('Choose date').textContent()
-    let yearFrom = calendarHeader?.split(' – ').map(Number)[0]
+    let allYears = (await page.locator('mat-multi-year-view .mat-calendar-body-cell').allTextContents())
+    let formattedAllYears = allYears.map(year => year.trim())
 
-    while (yearFrom && (yearFrom > Number(searchYear))) {
+    while (!formattedAllYears.includes(searchYear)) {
         await page.getByLabel('Previous 24 years').click()
-        calendarHeader = await page.getByLabel('Choose date').textContent()
-        yearFrom = calendarHeader?.split(' – ').map(Number)[0]
+        allYears = (await page.locator('mat-multi-year-view .mat-calendar-body-cell').allTextContents())
+        formattedAllYears = allYears.map(year => year.trim())
     }
-    
-    await page.getByText(searchYear).click()
-    await page.getByText('May').click()
-    await page.locator('[class="mat-calendar-body-cell"]').getByText(searchDay[0] == '0' ? searchDay.slice(1) : searchDay, { exact: true }).click()
+    await page.getByRole('button', { name: searchYear }).click()
+    await page.getByLabel(`${searchMonth} ${searchYear}`).click()
+    await page.getByLabel(dateToAssert).click()
     await expect(page.locator('[name="birthDate"]')).toHaveValue(dateToAssert)
 
     await page.locator('#type').selectOption('dog')
