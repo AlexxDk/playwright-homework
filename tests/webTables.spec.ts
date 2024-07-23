@@ -48,7 +48,7 @@ test.describe('OWNERS page', () => {
 
     test('Validate phone number and pet name on the Owner Information page', async ({ page }) => {
         const ownerRow = page.getByRole('row', { name: '6085552765' })
-        const petName = await ownerRow.locator('td').last().textContent()
+        const petName = await ownerRow.locator('td').last().textContent() || ''
 
         await ownerRow.getByRole('link', { name: 'Peter McTavish' }).click()
         await expect(page.locator('table').first().locator('tr td').last()).toContainText('6085552765')
@@ -60,12 +60,12 @@ test.describe('OWNERS page', () => {
         await page.waitForSelector('table')
 
         const expectedList = [" Leo ", " George ", " Mulligan ", " Freddy "]
-        let petList = []
+        let petList: string[] = []
 
         const allRows = page.getByRole('row', { name: "Madison" })
 
         for (const row of await allRows.all()) {
-            const petsValue = await row.locator('td').nth(4).textContent()
+            const petsValue = await row.locator('td').nth(4).textContent() || ''
             petList.push(petsValue)
         }
         expect(petList).toEqual(expectedList)
@@ -116,7 +116,7 @@ test('Validate specialty lists', async ({ page }) => {
     await page.waitForResponse('https://petclinic-api.bondaracademy.com/petclinic/api/specialties')
 
     const allSpecialtiesValues = page.locator('td input')
-    let specialtiesList = []
+    let specialtiesList: string[] = []
 
     for (const specialty of await allSpecialtiesValues.all()) {
         specialtiesList.push(await specialty.inputValue())
