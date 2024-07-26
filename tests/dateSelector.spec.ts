@@ -24,14 +24,7 @@ test('Select the desired date in the calendar', async ({ page }) => {
     const dateToAssert = `${searchYear}/${searchMonth}/${searchDay}`
 
     await page.getByLabel('Choose month and year').click()
-    let allYears = (await page.locator('mat-multi-year-view .mat-calendar-body-cell').allTextContents())
-    let formattedAllYears = allYears.map(year => year.trim())
-
-    while (!formattedAllYears.includes(searchYear)) {
-        await page.getByLabel('Previous 24 years').click()
-        allYears = (await page.locator('mat-multi-year-view .mat-calendar-body-cell').allTextContents())
-        formattedAllYears = allYears.map(year => year.trim())
-    }
+    await page.getByLabel('Previous 24 years').click()
     await page.getByRole('button', { name: searchYear }).click()
     await page.getByLabel(`${searchMonth} ${searchYear}`).click()
     await page.getByLabel(dateToAssert).click()
