@@ -10,6 +10,7 @@ export class NavigationPage {
     async ownersPage() {
         await this.page.getByText(" Owners").click();
         await this.page.locator(".dropdown-menu").getByText(" Search").click();
+        await expect(this.page.locator("h2")).toHaveText("Owners");
     }
 
     async veterinariansPage() {

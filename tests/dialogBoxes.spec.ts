@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
+import { PageManager } from "../page-objects/pageManager";
 
 test("Add and delete pet type", async ({ page }) => {
     await page.goto("/");
-    await page.getByText(" Pet Types").click();
-    await expect(page.locator("h2")).toHaveText("Pet Types");
+    const pm = new PageManager(page)
+    await pm.navigateTo().petTypesPage()
 
     await page.locator('.btn-default', { hasText: " Add " }).click()
     await expect(page.locator('.xd-container h2').last()).toHaveText('New Pet Type')
@@ -24,7 +25,7 @@ test("Add and delete pet type", async ({ page }) => {
         dialog.accept()
     })
 
-    
+
     await page.getByRole("button", { name: "Delete" }).last().click();
     await expect(lastInput).not.toHaveValue('pig')
 

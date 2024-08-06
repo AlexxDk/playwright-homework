@@ -1,42 +1,30 @@
 import { test, expect } from "@playwright/test";
+import { PageManager } from "../page-objects/pageManager";
 
 test.beforeEach(async ({ page }) => {
     await page.goto("/");
-    await page.getByText(" Owners").click();
-    await page.getByText("Search").click();
-    await expect(page.locator("h2")).toHaveText("Owners");
+
+    const pm = new PageManager(page)
+    await pm.navigateTo().ownersPage()
 });
 
 test('Select the desired date in the calendar', async ({ page }) => {
-    await page.getByRole('link', { name: 'Harold Davis' }).click()
-    await page.getByRole('button', { name: 'Add New Pet' }).click()
+    const pm = new PageManager(page)
+    await pm.onOwnerInformationPage().openFormAddNewPetForOwner('Harold Davis')
 
-    const icon = page.locator('span.glyphicon.form-control-feedback').first()
-    await expect(icon).toHaveClass(/glyphicon-remove/)
-    await page.locator('#name').fill('Tom')
-    await expect(icon).toHaveClass(/glyphicon-ok/);
-
-    await page.getByLabel('Open calendar').click();
-
-    const searchYear = '2014';
-    const searchMonth = '05';
-    const searchDay = '02';
-    const dateToAssert = `${searchYear}/${searchMonth}/${searchDay}`
-
-    await page.getByLabel('Choose month and year').click()
-    await page.getByLabel('Previous 24 years').click()
-    await page.getByRole('button', { name: searchYear }).click()
-    await page.getByLabel(`${searchMonth} ${searchYear}`).click()
-    await page.getByLabel(dateToAssert).click()
-    await expect(page.locator('[name="birthDate"]')).toHaveValue(dateToAssert)
-
-    await page.locator('#type').selectOption('dog')
-    await page.getByRole('button', { name: 'Save Pet' }).click()
+    const date = {
+        searchYear: '2014',
+        searchMonth: '05',
+        searchDay: '02'
+    }
+    
+    await pm.onOwnerInformationPage().addPet('Tom', date, 'dog')
 
     const petItem = page.locator('td', { has: page.getByText('Tom') })
     await expect(petItem).toBeVisible();
-    await expect(petItem).toContainText(`${searchYear}-${searchMonth}-${searchDay}`)
+    await expect(petItem).toContainText(`${date.searchYear}-${date.searchMonth}-${date.searchDay}`)
     await expect(petItem).toContainText('dog')
+
     await petItem.getByRole('button', { name: "Delete Pet" }).click()
     await expect(petItem).toHaveCount(0)
 })
