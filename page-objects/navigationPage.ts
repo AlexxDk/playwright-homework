@@ -16,7 +16,8 @@ export class NavigationPage {
         const veterinariansMenu = this.page.getByText(" Veterinarians")
         await veterinariansMenu.click();
         const veterinariansMenuAll = this.page.locator(".dropdown-menu").getByText(" All")
-        await veterinariansMenuAll.click();
+        await veterinariansMenuAll.click()
+        await expect(this.page.locator("h2")).toHaveText("Veterinarians");
 
     }
 
