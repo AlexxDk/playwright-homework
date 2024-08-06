@@ -1,6 +1,5 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 import { PageManager } from "../page-objects/pageManager";
-import { text } from "stream/consumers";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -22,5 +21,5 @@ test("Cancel pet type update", async ({ page }) => {
 
 test("Pet type name is required validation", async ({ page }) => {
   const pm = new PageManager(page)
-  await pm.onPetTypesPage().validationMessageChecking("Name is required")
+  await pm.onPetTypesPage().validationMessageChecking('Name is required')
 });
