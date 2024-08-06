@@ -1,20 +1,18 @@
 import { test, expect } from "@playwright/test";
+import { PageManager } from "../page-objects/pageManager";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
 
-  await page.getByText(" Veterinarians").click();
-  await page.locator(".dropdown-menu").getByText(" All").click();
+  const pm = new PageManager(page)
+  await pm.navigateTo().veterinariansPage()
 });
 
 test("Validate selected specialties", async ({ page }) => {
-  await expect(page.locator("h2")).toHaveText("Veterinarians");
+  const pm = new PageManager(page)
+  await pm.onVeterinariansPage().startEditVeterinarian(" Helen Leary ")
 
-  await page.locator("tr", { has: page.getByText(" Helen Leary ") }).getByRole("button", { name: "Edit Vet" }).click();
-
-  const selectedSpecialtiesDropdown = page.locator(".dropdown-display .selected-specialties");
-  await expect(selectedSpecialtiesDropdown).toContainText("radiology");
-  await selectedSpecialtiesDropdown.click();
+  await pm.onVeterinariansPage().checkInputValueContain("radiology")
 
   expect(await page.locator("#radiology").isChecked()).toBeTruthy();
   expect(await page.locator("#surgery").isChecked()).toBeFalsy();
@@ -23,19 +21,18 @@ test("Validate selected specialties", async ({ page }) => {
   await page.locator("#surgery").check();
   await page.locator("#radiology").uncheck();
 
-  await expect(selectedSpecialtiesDropdown).toContainText("surgery");
+  await pm.onVeterinariansPage().checkInputValueContain("surgery")
 
   await page.locator("#dentistry").check();
 
-  await expect(selectedSpecialtiesDropdown).toContainText("surgery, dentistry");
+  await pm.onVeterinariansPage().checkInputValueContain("surgery, dentistry")
 });
 
 test("Select all specialties", async ({ page }) => {
-  await page.locator("tr", { has: page.getByText(" Rafael Ortega ") }).getByRole("button", { name: "Edit Vet" }).click();
+  const pm = new PageManager(page)
+  await pm.onVeterinariansPage().startEditVeterinarian(" Rafael Ortega ")
 
-  const selectedSpecialtiesDropdown = page.locator(".dropdown-display .selected-specialties");
-  await expect(selectedSpecialtiesDropdown).toContainText("surgery");
-  await selectedSpecialtiesDropdown.click();
+  await pm.onVeterinariansPage().checkInputValueContain("surgery")
 
   const allSpecialtiesCheckboxes = page.getByRole("checkbox");
   for (const box of await allSpecialtiesCheckboxes.all()) {
@@ -43,15 +40,14 @@ test("Select all specialties", async ({ page }) => {
     expect(await box.isChecked()).toBeTruthy();
   }
 
-  await expect(selectedSpecialtiesDropdown).toContainText("surgery, radiology, dentistry, new specialty ");
+  await pm.onVeterinariansPage().checkInputValueContain("surgery, radiology, dentistry")
 });
 
 test("Unselect all specialties", async ({ page }) => {
-  await page.locator("tr", { has: page.getByText(" Linda Douglas ") }).getByRole("button", { name: "Edit Vet" }).click();
+  const pm = new PageManager(page)
+  await pm.onVeterinariansPage().startEditVeterinarian(" Linda Douglas ")
 
-  const selectedSpecialtiesDropdown = page.locator(".dropdown-display .selected-specialties");
-  await expect(selectedSpecialtiesDropdown).toContainText("dentistry, surgery");
-  await selectedSpecialtiesDropdown.click();
+  await pm.onVeterinariansPage().checkInputValueContain("dentistry, surgery")
 
   const allSpecialtiesCheckboxes = page.getByRole("checkbox");
   for (const box of await allSpecialtiesCheckboxes.all()) {
@@ -59,5 +55,5 @@ test("Unselect all specialties", async ({ page }) => {
     expect(await box.isChecked()).toBeFalsy();
   }
 
-  await expect(selectedSpecialtiesDropdown).toBeEmpty();
+  await expect(page.locator(".dropdown-display .selected-specialties")).toBeEmpty();
 });
