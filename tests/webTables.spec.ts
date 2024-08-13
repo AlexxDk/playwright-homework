@@ -30,8 +30,9 @@ test.describe('OWNERS page', () => {
     })
 
     test('Validate phone number and pet name on the Owner Information page', async ({ page }) => {
-        const onOwnersPage = new OwnersPage(page)
-        await onOwnersPage.ValidatePhoneNumberAndPetName('6085552765', 'Peter McTavish')
+        const pm = new PageManager(page)
+        const petName = await pm.onOwnersPage().selectOwnerByPhoneAndGetItsPets('6085552765')
+        await pm.onOwnerInformationPage().validatePhoneAndFirstPetName('6085552765', petName)
     })
 
     test('Validate pets of the Madison city', async ({ page }) => {

@@ -33,18 +33,15 @@ export class OwnersPage {
         }
 
     }
-
-    async ValidatePhoneNumberAndPetName(phone: string, ownerName: string){
+    
+    async selectOwnerByPhoneAndGetItsPets(phone: string){
         const ownerRow = this.page.getByRole('row', { name: phone })
         const petName = await ownerRow.locator('td').last().textContent() || ''
-
-        await ownerRow.getByRole('link', { name: ownerName }).click()
-        await expect(this.page.locator('table').first().locator('tr td').last()).toContainText(phone)
-        await expect(this.page.locator('.dl-horizontal dd').first()).toContainText(petName)
-
+        await this.page.getByRole('row', { name: phone }).getByRole('link').click()
+        return petName
     }
 
-   
+
 
 
 }

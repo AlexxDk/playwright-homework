@@ -32,4 +32,9 @@ export class OwnerInformationPage {
         await this.page.locator('#type').selectOption(type)
         await this.page.getByRole('button', { name: 'Save Pet' }).click()
     }
+
+    async validatePhoneAndFirstPetName(phone: string, petName: string){
+        await expect(this.page.locator('table').first().locator('tr td').last()).toContainText(phone)
+        await expect(this.page.locator('.dl-horizontal dd').first()).toContainText(petName)
+    }
 }
