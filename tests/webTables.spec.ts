@@ -77,36 +77,17 @@ test('Validate specialty lists', async ({ page }) => {
 
     await pm.onSpecialtiesPage().addNewSpecialty('oncology')
 
-    // const allSpecialtiesValues = page.locator('td input')
-    // let specialtiesList: string[] = []
-
-    // for (const specialty of await allSpecialtiesValues.all()) {
-    //     specialtiesList.push(await specialty.inputValue())
-    // }
     const allSpecialtiesOnTheVeterinarianPage = await pm.onSpecialtiesPage().listOfAllSpecialties()
 
     await pm.navigateTo().veterinariansPage()
 
-    // const sharonJenkinsRow = page.locator('tr', { has: page.getByText(' Sharon Jenkins ') })
-    // await sharonJenkinsRow.getByRole('button', { name: 'Edit Vet' }).click()
-
-    // await page.locator('.dropdown-display').click()
-    // const allValuesFromDropDownMenu = await page.locator(".dropdown-content label").allTextContents()
-
-    // expect(allSpecialtiesOnTheVeterinarianPage).toEqual(allValuesFromDropDownMenu)
-
-    // await page.getByLabel('oncology').click()
-    // await page.locator('.selected-specialties').click()
-    // await page.getByRole('button', { name: 'Save Vet' }).click()
-    // await expect(sharonJenkinsRow.locator('td').nth(1)).toContainText('oncology')
-    await pm.onSpecialtiesPage().editVetForSpecificVeterinarian(' Sharon Jenkins ', 'oncology', allSpecialtiesOnTheVeterinarianPage)
+    await pm.onVeterinariansPage().selectEditVetByName(' Sharon Jenkins ')
+    await pm.onEditVeterinariansPage().updateVetTo('oncology', allSpecialtiesOnTheVeterinarianPage)
+    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian(' Sharon Jenkins ', 'oncology')
 
     await pm.navigateTo().specialtiesPage()
-
-    await page.locator('tbody tr').last().getByRole('button', { name: "Delete" }).click()
+    await pm.onSpecialtiesPage().deleteLastSpecialty()
 
     await pm.navigateTo().veterinariansPage()
-
-    await expect(page.locator('tr', { has: page.getByText(' Sharon Jenkins ') }).locator('td').nth(1)).toBeEmpty()
-
+    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian(' Sharon Jenkins ', 'empty')
 })

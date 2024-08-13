@@ -8,11 +8,20 @@ export class VeterinariansPage {
     }
 
     async validateSpecialtyForVeterinarian(veterinarianName: string, specialty: string) {
-        const rafaelSpecialty = this.page.getByRole('row', { name: veterinarianName }).locator('td').nth(1)
-        await expect(rafaelSpecialty).toContainText(specialty)
+        const specialtyRow = this.page.getByRole('row', { name: veterinarianName }).locator('td').nth(1)
+        if (specialty == 'empty') {
+            await expect(this.page.locator('tr', { has: this.page.getByText(veterinarianName) }).locator('td').nth(1)).toBeEmpty()
+        } else {
+            await expect(specialtyRow).toContainText(specialty)
+        }
     }
 
     async selectEditButtonForVeterinarianWithName(name: string) {
         await this.page.locator("tr", { has: this.page.getByText(name) }).getByRole("button", { name: "Edit Vet" }).click();
+    }
+    
+    async selectEditVetByName(veterinarianName: string) {
+        const veterinarianRow = this.page.locator('tr', { has: this.page.getByText(veterinarianName) })
+        await veterinarianRow.getByRole('button', { name: 'Edit Vet' }).click()
     }
 }

@@ -35,19 +35,7 @@ export class SpecialtiesPage {
         return specialtiesList
     }
 
-    async editVetForSpecificVeterinarian(veterinarianName: string, specialtyItem: string, arrayOfAllSpecialties?: string[]) {
-        const veterinarianRow = this.page.locator('tr', { has: this.page.getByText(veterinarianName) })
-        await veterinarianRow.getByRole('button', { name: 'Edit Vet' }).click()
-
-        await this.page.locator('.dropdown-display').click()
-        const allValuesFromDropDownMenu = await this.page.locator(".dropdown-content label").allTextContents()
-
-        expect(arrayOfAllSpecialties).toEqual(allValuesFromDropDownMenu)
-
-        await this.page.getByLabel(specialtyItem).click()
-        await this.page.locator('.selected-specialties').click()
-        await this.page.getByRole('button', { name: 'Save Vet' }).click()
-        await expect(veterinarianRow.locator('td').nth(1)).toContainText(specialtyItem)
+    async deleteLastSpecialty(){
+        await this.page.locator('tbody tr').last().getByRole('button', { name: "Delete" }).click()
     }
-
 }
