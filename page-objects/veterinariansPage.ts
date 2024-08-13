@@ -15,13 +15,4 @@ export class VeterinariansPage {
     async selectEditButtonForVeterinarianWithName(name: string) {
         await this.page.locator("tr", { has: this.page.getByText(name) }).getByRole("button", { name: "Edit Vet" }).click();
     }
-
-    async checkInputValueContain(expectedInputValue: string) {
-        const selectedSpecialtiesDropdown = this.page.locator(".dropdown-display .selected-specialties");
-        await expect(selectedSpecialtiesDropdown).toContainText(expectedInputValue);
-        if (await this.page.locator(".dropdown-display").locator('..').getAttribute('class') !== 'dropdown show')
-            await selectedSpecialtiesDropdown.click();
-    }
-
-
 }

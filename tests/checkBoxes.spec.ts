@@ -12,7 +12,7 @@ test("Validate selected specialties", async ({ page }) => {
   const pm = new PageManager(page)
   await pm.onVeterinariansPage().selectEditButtonForVeterinarianWithName(" Helen Leary ")
 
-  await pm.onVeterinariansPage().checkInputValueContain("radiology")
+  await pm.onEditVeterinariansPage().checkInputValueContain("radiology")
 
   expect(await page.locator("#radiology").isChecked()).toBeTruthy();
   expect(await page.locator("#surgery").isChecked()).toBeFalsy();
@@ -21,18 +21,18 @@ test("Validate selected specialties", async ({ page }) => {
   await page.locator("#surgery").check();
   await page.locator("#radiology").uncheck();
 
-  await pm.onVeterinariansPage().checkInputValueContain("surgery")
+  await pm.onEditVeterinariansPage().checkInputValueContain("surgery")
 
   await page.locator("#dentistry").check();
 
-  await pm.onVeterinariansPage().checkInputValueContain("surgery, dentistry")
+  await pm.onEditVeterinariansPage().checkInputValueContain("surgery, dentistry")
 });
 
 test("Select all specialties", async ({ page }) => {
   const pm = new PageManager(page)
   await pm.onVeterinariansPage().selectEditButtonForVeterinarianWithName(" Rafael Ortega ")
 
-  await pm.onVeterinariansPage().checkInputValueContain("surgery")
+  await pm.onEditVeterinariansPage().checkInputValueContain("surgery")
 
   const allSpecialtiesCheckboxes = page.getByRole("checkbox");
   for (const box of await allSpecialtiesCheckboxes.all()) {
@@ -40,14 +40,14 @@ test("Select all specialties", async ({ page }) => {
     expect(await box.isChecked()).toBeTruthy();
   }
 
-  await pm.onVeterinariansPage().checkInputValueContain("surgery, radiology, dentistry")
+  await pm.onEditVeterinariansPage().checkInputValueContain("surgery, radiology, dentistry")
 });
 
 test("Unselect all specialties", async ({ page }) => {
   const pm = new PageManager(page)
   await pm.onVeterinariansPage().selectEditButtonForVeterinarianWithName(" Linda Douglas ")
 
-  await pm.onVeterinariansPage().checkInputValueContain("dentistry, surgery")
+  await pm.onEditVeterinariansPage().checkInputValueContain("dentistry, surgery")
 
   const allSpecialtiesCheckboxes = page.getByRole("checkbox");
   for (const box of await allSpecialtiesCheckboxes.all()) {
