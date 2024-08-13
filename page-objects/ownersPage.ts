@@ -7,7 +7,7 @@ export class OwnersPage {
         this.page = page
     }
 
-    async ValidateThePetNameCityOfTheOwner(phone: string, city: string, pets: string) {
+    async validatePetNamesAndCityOfOwnerByPhoneNumber(phone: string, city: string, pets: string) {
         const ownerRow = this.page.getByRole('row', { name: phone })
         await expect(ownerRow.locator('td').nth(2)).toHaveText(city)
         await expect(ownerRow.locator('td').last()).toHaveText(pets)

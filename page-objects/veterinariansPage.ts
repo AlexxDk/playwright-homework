@@ -12,7 +12,7 @@ export class VeterinariansPage {
         await expect(rafaelSpecialty).toContainText(specialty)
     }
 
-    async startEditVeterinarian(name: string) {
+    async selectEditButtonForVeterinarianWithName(name: string) {
         await this.page.locator("tr", { has: this.page.getByText(name) }).getByRole("button", { name: "Edit Vet" }).click();
     }
 

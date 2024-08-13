@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 
 test("Validate selected specialties", async ({ page }) => {
   const pm = new PageManager(page)
-  await pm.onVeterinariansPage().startEditVeterinarian(" Helen Leary ")
+  await pm.onVeterinariansPage().selectEditButtonForVeterinarianWithName(" Helen Leary ")
 
   await pm.onVeterinariansPage().checkInputValueContain("radiology")
 
@@ -30,7 +30,7 @@ test("Validate selected specialties", async ({ page }) => {
 
 test("Select all specialties", async ({ page }) => {
   const pm = new PageManager(page)
-  await pm.onVeterinariansPage().startEditVeterinarian(" Rafael Ortega ")
+  await pm.onVeterinariansPage().selectEditButtonForVeterinarianWithName(" Rafael Ortega ")
 
   await pm.onVeterinariansPage().checkInputValueContain("surgery")
 
@@ -45,7 +45,7 @@ test("Select all specialties", async ({ page }) => {
 
 test("Unselect all specialties", async ({ page }) => {
   const pm = new PageManager(page)
-  await pm.onVeterinariansPage().startEditVeterinarian(" Linda Douglas ")
+  await pm.onVeterinariansPage().selectEditButtonForVeterinarianWithName(" Linda Douglas ")
 
   await pm.onVeterinariansPage().checkInputValueContain("dentistry, surgery")
 

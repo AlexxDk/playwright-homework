@@ -11,7 +11,7 @@ test.describe('OWNERS page', () => {
 
     test('Validate the pet name city of the owner', async ({ page }) => {
         const onOwnersPage = new OwnersPage(page)
-        await onOwnersPage.ValidateThePetNameCityOfTheOwner('6085555387', 'Monona', 'Lucky')
+        await onOwnersPage.validatePetNamesAndCityOfOwnerByPhoneNumber('6085555387', 'Monona', 'Lucky')
     })
 
     test('Validate owners count of the Madison city', async ({ page }) => {

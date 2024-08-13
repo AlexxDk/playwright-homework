@@ -12,13 +12,13 @@ test('Select the desired date in the calendar', async ({ page }) => {
     const pm = new PageManager(page)
     await pm.onOwnerInformationPage().openFormAddNewPetForOwner('Harold Davis')
 
-    const date = {
-        searchYear: '2014',
-        searchMonth: '05',
-        searchDay: '02'
+    const { birthYear, birthMonth, birthDay } = {
+        birthYear: '2014',
+        birthMonth: '05',
+        birthDay: '02'
     }
-    
-    await pm.onOwnerInformationPage().addPet('Tom', date, 'dog')
+
+    await pm.onOwnerInformationPage().addNewPet('Tom', birthDay, birthMonth, birthYear, 'dog')
 
     const petItem = page.locator('td', { has: page.getByText('Tom') })
     await expect(petItem).toBeVisible();
