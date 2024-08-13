@@ -7,7 +7,7 @@ import { OwnerInformationPage } from "./ownerInformationPage";
 import { OwnersPage } from "./ownersPage";
 import { PetDetailsPage } from "./petDetailsPage";
 import { EditVeterinariansPage } from "./editVeterinariansPage"
-import { EditSpecialtiesPage } from "./editSpecialtiesPage";
+import { EditSpecialtyPage } from "./editSpecialtyPage";
 
 export class PageManager {
     private readonly page: Page
@@ -19,7 +19,7 @@ export class PageManager {
     private readonly ownersPage: OwnersPage
     private readonly petDetailsPage: PetDetailsPage
     private readonly editVeterinariansPage: EditVeterinariansPage
-    private readonly editSpecialtiesPage: EditSpecialtiesPage
+    private readonly editSpecialtyPage: EditSpecialtyPage
     
 
     constructor(page: Page) {
@@ -32,7 +32,7 @@ export class PageManager {
         this.ownersPage = new OwnersPage(this.page)
         this.petDetailsPage = new PetDetailsPage(this.page)
         this.editVeterinariansPage = new EditVeterinariansPage(this.page)
-        this.editSpecialtiesPage = new EditSpecialtiesPage(this.page)
+        this.editSpecialtyPage = new EditSpecialtyPage(this.page)
         
     }
 
@@ -68,7 +68,7 @@ export class PageManager {
         return this.editVeterinariansPage
     }
 
-    onEditSpecialtiesPage(){
-        return this.editSpecialtiesPage
+    onEditSpecialtyPage(){
+        return this.editSpecialtyPage
     }
 }

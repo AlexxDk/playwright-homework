@@ -25,8 +25,6 @@ test.describe('OWNERS page', () => {
         await onOwnersPage.ValidateSearchByLastName('Davis')
         await onOwnersPage.ValidateSearchByLastName('Es')
         await onOwnersPage.ValidateSearchByLastName('Playwright')
-
-
     })
 
     test('Validate phone number and pet name on the Owner Information page', async ({ page }) => {
@@ -61,7 +59,7 @@ test('Validate specialty update', async ({ page }) => {
     await pm.navigateTo().specialtiesPage()
 
     await pm.onSpecialtiesPage().selectEditSpecialtyByIndex(1)
-    await pm.onEditSpecialtiesPage().updateSpecialtyTo('dermatology')
+    await pm.onEditSpecialtyPage().updateSpecialtyTo('dermatology')
 
     await pm.navigateTo().veterinariansPage()
 
@@ -69,7 +67,7 @@ test('Validate specialty update', async ({ page }) => {
     await pm.navigateTo().specialtiesPage()
 
     await pm.onSpecialtiesPage().selectEditSpecialtyByIndex(1)
-    await pm.onEditSpecialtiesPage().updateSpecialtyTo('surgery')
+    await pm.onEditSpecialtyPage().updateSpecialtyTo('surgery')
 })
 
 test('Validate specialty lists', async ({ page }) => {
