@@ -15,13 +15,8 @@ export class VeterinariansPage {
             await expect(specialtyRow).toContainText(specialty)
         }
     }
-
-    async selectEditButtonForVeterinarianWithName(name: string) {
-        await this.page.locator("tr", { has: this.page.getByText(name) }).getByRole("button", { name: "Edit Vet" }).click();
-    }
     
     async selectEditVetByName(veterinarianName: string) {
-        const veterinarianRow = this.page.locator('tr', { has: this.page.getByText(veterinarianName) })
-        await veterinarianRow.getByRole('button', { name: 'Edit Vet' }).click()
+        await this.page.locator('tr', { has: this.page.getByText(veterinarianName) }).getByRole('button', { name: 'Edit Vet' }).click()
     }
 }
