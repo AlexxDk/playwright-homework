@@ -22,7 +22,7 @@ test('Select the desired date in the calendar', async ({ page }) => {
 
     const petItem = page.locator('td', { has: page.getByText('Tom') })
     await expect(petItem).toBeVisible();
-    await expect(petItem).toContainText(`${date.searchYear}-${date.searchMonth}-${date.searchDay}`)
+    await expect(petItem).toContainText(`${birthYear}-${birthMonth}-${birthDay}`)
     await expect(petItem).toContainText('dog')
 
     await petItem.getByRole('button', { name: "Delete Pet" }).click()
