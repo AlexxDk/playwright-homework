@@ -53,19 +53,23 @@ test.describe('OWNERS page', () => {
 })
 
 test('Validate specialty update', async ({ page }) => {
+    await page.goto("/");
     const pm = new PageManager(page)
     await pm.navigateTo().veterinariansPage()
 
     await pm.onVeterinariansPage().validateSpecialtyForVeterinarian(" Rafael Ortega ", 'surgery')
     await pm.navigateTo().specialtiesPage()
 
-    await pm.onSpecialtiesPage().specialtyUpdate('dermatology')
+    await pm.onSpecialtiesPage().selectEditSpecialtyByIndex(1)
+    await pm.onEditSpecialtiesPage().updateSpecialtyTo('dermatology')
+
     await pm.navigateTo().veterinariansPage()
 
     await pm.onVeterinariansPage().validateSpecialtyForVeterinarian(" Rafael Ortega ", 'dermatology')
     await pm.navigateTo().specialtiesPage()
 
-    await pm.onSpecialtiesPage().specialtyUpdate('surgery')
+    await pm.onSpecialtiesPage().selectEditSpecialtyByIndex(1)
+    await pm.onEditSpecialtiesPage().updateSpecialtyTo('surgery')
 })
 
 test('Validate specialty lists', async ({ page }) => {

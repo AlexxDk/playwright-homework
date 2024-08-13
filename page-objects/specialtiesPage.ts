@@ -7,17 +7,14 @@ export class SpecialtiesPage {
         this.page = page
     }
 
-    async specialtyUpdate(specialtyName: string) {
-        const rowSurgery = this.page.locator('tr', { has: this.page.locator('[id="1"]') })
+    async selectEditSpecialtyByIndex(index: number) {
+        const rowSurgery = this.page.locator('tr', { has: this.page.locator(`[id="${index}"]`) })
         await rowSurgery.getByRole("button", { name: "Edit" }).click();
         await expect(this.page.locator('h2')).toContainText('Edit Specialty')
+    }
 
-        const editSpecialtyInput = this.page.locator('#name')
-        await editSpecialtyInput.click()
-        await editSpecialtyInput.clear()
-        await editSpecialtyInput.fill(specialtyName)
-        await this.page.getByRole('button', { name: "Update" }).click()
-        await expect(rowSurgery.locator('td input').first()).toHaveValue(specialtyName)
+    async validateRowSpecialtyValueByIndex(index: number, specialtyName: string) {
+        await expect(this.page.locator('tr', { has: this.page.locator(`[id="${index}"]`) }).locator('td input').first()).toHaveValue(specialtyName)
     }
 
     async addNewSpecialty(newSpecialty: string) {
@@ -28,7 +25,7 @@ export class SpecialtiesPage {
 
     }
 
-     async listOfAllSpecialties() {
+    async listOfAllSpecialties() {
         const allSpecialtiesValues = this.page.locator('td input')
         let specialtiesList: string[] = []
 
