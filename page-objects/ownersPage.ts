@@ -33,15 +33,15 @@ export class OwnersPage {
         }
 
     }
-    
-    async selectOwnerByPhoneAndGetItsPets(phone: string){
+
+    async selectOwnerByPhoneAndGetItsPets(phone: string) {
         const ownerRow = this.page.getByRole('row', { name: phone })
         const petName = await ownerRow.locator('td').last().textContent() || ''
         await this.page.getByRole('row', { name: phone }).getByRole('link').click()
         return petName
     }
 
-
-
-
+    async openOwnerInfoPageFor(ownerName: string) {
+        await this.page.getByRole('link', { name: ownerName }).click()
+    }
 }

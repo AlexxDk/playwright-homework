@@ -1,40 +1,61 @@
 import { expect, Page, test } from "@playwright/test";
+import { HelperBase } from "./helperBase";
 
-export class OwnerInformationPage {
-    readonly page: Page
-
+export class OwnerInformationPage extends HelperBase {
     constructor(page: Page) {
-        this.page = page
+        super(page)
     }
 
-    async openFormAddNewPetForOwner(ownerName: string) {
-        await this.page.getByRole('link', { name: ownerName }).click()
+    async openFormAddNewPet() {
         await this.page.getByRole('button', { name: 'Add New Pet' }).click()
     }
 
-    async addNewPet(name: string, birthDay: string, birthMonth: string, birthYear: string, type: string) {
-        const icon = this.page.locator('span.glyphicon.form-control-feedback').first()
-        await expect(icon).toHaveClass(/glyphicon-remove/)
-        await this.page.locator('#name').fill(name)
-        await expect(icon).toHaveClass(/glyphicon-ok/);
+    async openFormAddVisit(petName: string, ownerName: string) {
+        await this.page.locator('td', { has: this.page.getByText(petName) }).getByRole('button', { name: "Add Visit" }).click()
+        await expect(this.page.locator('h2')).toHaveText('New Visit')
+        await expect(this.page.locator('tr', { has: this.page.getByText(petName) })).toContainText(ownerName)
 
-        await this.page.getByLabel('Open calendar').click();
-
-        const dateToAssert = `${birthYear}/${birthMonth}/${birthDay}`
-
-        await this.page.getByLabel('Choose month and year').click()
-        await this.page.getByLabel('Previous 24 years').click()
-        await this.page.getByRole('button', { name: birthYear }).click()
-        await this.page.getByLabel(`${birthMonth} ${birthYear}`).click()
-        await this.page.getByLabel(dateToAssert).click()
-        await expect(this.page.locator('[name="birthDate"]')).toHaveValue(dateToAssert)
-
-        await this.page.locator('#type').selectOption(type)
-        await this.page.getByRole('button', { name: 'Save Pet' }).click()
     }
 
-    async validatePhoneAndFirstPetName(phone: string, petName: string){
+    async validatePhoneAndFirstPetName(phone: string, petName: string) {
         await expect(this.page.locator('table').first().locator('tr td').last()).toContainText(phone)
         await expect(this.page.locator('.dl-horizontal dd').first()).toContainText(petName)
+    }
+
+    async validatePetInfo(name: string, birthDay: string, birthMonth: string, birthYear: string, type: string) {
+        const petItem = this.page.locator('td', { has: this.page.getByText(name) })
+        await expect(petItem).toBeVisible();
+        await expect(petItem).toContainText(`${birthYear}-${birthMonth}-${birthDay}`)
+        await expect(petItem).toContainText(type)
+        return petItem
+    }
+
+    async deletePetByName(name: string) {
+        await this.page.locator('td', { has: this.page.getByText(name) })
+            .getByRole('button', { name: "Delete Pet" }).click()
+    }
+
+    async validateVisitDateForPet(petName: string, date: Date) {
+        const formattedDateOnTheOwnerPage = this.formatDate(date, 'YYYY-MM-DD');
+        const firstVisitRowInfoForSamantha = this.page.locator('app-pet-list', { has: this.page.getByText(petName) }).locator('app-visit-list tr td').first()
+        await expect(firstVisitRowInfoForSamantha).toHaveText(formattedDateOnTheOwnerPage)
+    }
+
+    async compareTwoVisitsDatesForPet(petName: string, firstVisitDescription: string, secondVisitDescription: string) {
+        const firstDateValue = await this.returnVisitRowByPetAndDescription(petName, firstVisitDescription).locator('td').first().textContent()
+        const secondDateValue = await this.returnVisitRowByPetAndDescription(petName, secondVisitDescription).locator('td').first().textContent()
+        const firstDate = new Date(firstDateValue!);
+        const secondDate = new Date(secondDateValue!);
+        expect(firstDate > secondDate).toBeTruthy();
+    }
+
+    async deleteVisitForPet(petName: string, description: string) {
+        await this.returnVisitRowByPetAndDescription(petName, description)
+            .getByRole('button', { name: 'Delete Visit' }).click()
+
+    }
+
+    private returnVisitRowByPetAndDescription(petName: string, description: string) {
+        return this.page.locator('app-pet-list', { has: this.page.getByText(petName) }).locator('app-visit-list').locator('tr', { has: this.page.getByText(description) })
     }
 }
