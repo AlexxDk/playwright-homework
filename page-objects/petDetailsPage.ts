@@ -12,12 +12,11 @@ export class PetDetailsPage {
         await this.page.getByRole("button", { name: "Update" }).click();
     }
 
-    async cancelUpdateOfPetType(newPetType: string) {
-        this.clearOldAndFillNewPetTypeToInputField(newPetType)
+    async cancelUpdateOfPetType() {
         await this.page.getByRole("button", { name: "Cancel" }).click();
     }
 
-    private async clearOldAndFillNewPetTypeToInputField(newPetType: string) {
+    async clearOldAndFillNewPetTypeToInputField(newPetType: string) {
         const petTypeInput = this.page.locator("#name");
         await petTypeInput.click();
         await petTypeInput.clear();

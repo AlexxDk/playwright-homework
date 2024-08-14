@@ -20,9 +20,9 @@ test('Select the desired date in the calendar', async ({ page }) => {
     }
 
     await pm.onAddNewPetPage().addPet('Tom', birthDay, birthMonth, birthYear, 'dog')
-    const pet = await pm.onOwnerInformationPage().validatePetInfo('Tom', birthDay, birthMonth, birthYear, 'dog')
+    const petSelectorByName = await pm.onOwnerInformationPage().validatePetInfo('Tom', birthDay, birthMonth, birthYear, 'dog')
     await pm.onOwnerInformationPage().deletePetByName('Tom')
-    await expect(pet).toHaveCount(0)
+    await expect(petSelectorByName).toHaveCount(0)
 })
 
 test('Select the desired date in the calendar 2', async ({ page }) => {

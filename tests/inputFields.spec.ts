@@ -24,8 +24,8 @@ test("Update pet type", async ({ page }) => {
 test("Cancel pet type update", async ({ page }) => {
   const pm = new PageManager(page)
   await pm.onPetTypesPage().selectEditPetByIndex(1)
-  await pm.onPetDetailsPage().cancelUpdateOfPetType('moose')
-
+  await pm.onPetDetailsPage().clearOldAndFillNewPetTypeToInputField('moose')
+  await pm.onPetDetailsPage().cancelUpdateOfPetType()
   await pm.onPetTypesPage().validateRowValueByIndex(1, 'dog')
 });
 

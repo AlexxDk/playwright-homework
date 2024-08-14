@@ -52,6 +52,14 @@ export class OwnerInformationPage extends HelperBase {
         await expect(firstVisitRowInfoForSamantha).toHaveText(formattedDateOnTheOwnerPage)
     }
 
+    /**
+     * The result is assertion like (firstDate > secondDate),
+     * that date added before is in chronological order in relation to the previous dates
+     * that already exist in for specific pet on the "Owner Information" page.
+     * @param petName 
+     * @param firstVisitDescription date of the first added visit, for example <today>
+     * @param secondVisitDescription date of the second added visit, <date in the past>
+     */
     async compareTwoVisitsDatesForPet(petName: string, firstVisitDescription: string, secondVisitDescription: string) {
         const firstDateValue = await this.returnVisitRowByPetAndDescription(petName, firstVisitDescription).locator('td').first().textContent()
         const secondDateValue = await this.returnVisitRowByPetAndDescription(petName, secondVisitDescription).locator('td').first().textContent()
