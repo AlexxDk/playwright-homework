@@ -10,6 +10,7 @@ import { EditVeterinariansPage } from "./editVeterinariansPage"
 import { EditSpecialtyPage } from "./editSpecialtyPage";
 import { AddNewPetPage } from "./addNewPetPage";
 import { AddNewVisitPage } from "./addNewVisitPage";
+import { EditPetPage } from "./editPetPage";
 
 export class PageManager {
     private readonly page: Page
@@ -24,8 +25,7 @@ export class PageManager {
     private readonly editSpecialtyPage: EditSpecialtyPage
     private readonly addNewPetPage: AddNewPetPage
     private readonly addNewVisitPage: AddNewVisitPage
-
-    
+    private readonly editPetPage: EditPetPage
 
     constructor(page: Page) {
         this.page = page
@@ -40,6 +40,7 @@ export class PageManager {
         this.editSpecialtyPage = new EditSpecialtyPage(this.page)
         this.addNewPetPage = new AddNewPetPage(this.page)
         this.addNewVisitPage = new AddNewVisitPage(this.page)
+        this.editPetPage = new EditPetPage(this.page)
         
     }
 
@@ -85,5 +86,9 @@ export class PageManager {
 
     onAddNewVisitPage(){
         return this.addNewVisitPage
+    }
+
+    onEditPetPage(){
+        return this.editPetPage
     }
 }

@@ -10,11 +10,22 @@ export class OwnerInformationPage extends HelperBase {
         await this.page.getByRole('button', { name: 'Add New Pet' }).click()
     }
 
+    async openFormEditPetByName(petName: string) {
+        await this.page.locator('td', { has: this.page.getByText(petName) }).getByRole('button', { name: "Edit Pet" }).click()
+        await expect(this.page.locator("h2")).toHaveText(" Pet ");
+    }
+
     async openFormAddVisit(petName: string, ownerName: string) {
         await this.page.locator('td', { has: this.page.getByText(petName) }).getByRole('button', { name: "Add Visit" }).click()
         await expect(this.page.locator('h2')).toHaveText('New Visit')
         await expect(this.page.locator('tr', { has: this.page.getByText(petName) })).toContainText(ownerName)
 
+    }
+
+    async validatePetTypeByName(petName: string, petType: string) {
+        const typeInTable = this.page.locator('td', { has: this.page.getByText(petName) })
+            .locator('.dl-horizontal dd').nth(2)
+        await expect(typeInTable).toHaveText(petType)
     }
 
     async validatePhoneAndFirstPetName(phone: string, petName: string) {

@@ -43,5 +43,6 @@ export class OwnersPage {
 
     async openOwnerInfoPageFor(ownerName: string) {
         await this.page.getByRole('link', { name: ownerName }).click()
+        await expect(this.page.locator('.ownerFullName')).toHaveText(ownerName)
     }
 }
