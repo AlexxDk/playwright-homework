@@ -1,0 +1,160 @@
+[
+  {
+    "firstName": "George",
+    "lastName": "Franklin",
+    "address": "110 W. Liberty St.",
+    "city": "Madison",
+    "telephone": "6085551023",
+    "id": 125,
+    "pets": [
+      {
+        "name": "Leonardo",
+        "birthDate": "2000-09-07",
+        "type": {
+          "name": "cat",
+          "id": 157
+        },
+        "id": 165,
+        "ownerId": 125,
+        "visits": [
+          {
+            "date": "2024-08-01",
+            "description": "test visit",
+            "id": 1000,
+            "petId": null
+          },
+          {
+            "date": "2024-08-01",
+            "description": "test visit1",
+            "id": 1001,
+            "petId": null
+          },
+          {
+            "date": "2024-08-01",
+            "description": "test visit2",
+            "id": 1002,
+            "petId": null
+          },
+          {
+            "date": "2024-08-01",
+            "description": "test visit3",
+            "id": 1003,
+            "petId": null
+          },
+          {
+            "date": "2024-08-01",
+            "description": "test visit4",
+            "id": 1004,
+            "petId": null
+          },
+          {
+            "date": "2024-08-01",
+            "description": "test visit5",
+            "id": 1005,
+            "petId": null
+          },
+          {
+            "date": "2024-08-01",
+            "description": "test visit6",
+            "id": 1006,
+            "petId": null
+          },
+          {
+            "date": "2024-08-01",
+            "description": "test visit7",
+            "id": 1007,
+            "petId": null
+          },
+          {
+            "date": "2024-08-01",
+            "description": "test visit8",
+            "id": 1008,
+            "petId": null
+          },
+          {
+            "date": "2024-08-01",
+            "description": "test visit9",
+            "id": 1009,
+            "petId": null
+          }
+        ]
+      },
+      {
+        "name": "Donatello",
+        "birthDate": "2000-09-07",
+        "type": {
+          "name": "cat",
+          "id": 157
+        },
+        "id": 172,
+        "ownerId": 125,
+        "visits": []
+      }
+    ]
+  },
+  {
+    "firstName": "Betty",
+    "lastName": "Davis",
+    "address": "638 Cardinal Ave.",
+    "city": "Sun Prairie",
+    "telephone": "6085551749",
+    "id": 126,
+    "pets": [
+      {
+        "name": "Leonardo",
+        "birthDate": "2000-09-07",
+        "type": {
+          "name": "cat",
+          "id": 157
+        },
+        "id": 172,
+        "ownerId": 126,
+        "visits": []
+      },
+      {
+        "name": "Donatello",
+        "birthDate": "2000-09-07",
+        "type": {
+          "name": "cat",
+          "id": 157
+        },
+        "id": 172,
+        "ownerId": 126,
+        "visits": []
+      },
+      {
+        "name": "Raphael",
+        "birthDate": "2000-09-07",
+        "type": {
+          "name": "cat",
+          "id": 157
+        },
+        "id": 172,
+        "ownerId": 126,
+        "visits": []
+      },
+      {
+        "name": "Michelangelo",
+        "birthDate": "2000-09-07",
+        "type": {
+          "name": "cat",
+          "id": 157
+        },
+        "id": 172,
+        "ownerId": 126,
+        "visits": []
+      },
+      {
+        "name": "Splinter",
+        "birthDate": "2000-09-07",
+        "type": {
+          "name": "cat",
+          "id": 157
+        },
+        "id": 172,
+        "ownerId": 126,
+        "visits": []
+      }
+    ]
+  }
+]
