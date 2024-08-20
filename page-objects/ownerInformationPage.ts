@@ -78,7 +78,8 @@ export class OwnerInformationPage extends HelperBase {
         return this.page.locator('app-pet-list', { has: this.page.getByText(petName) }).locator('app-visit-list').locator('tr', { has: this.page.getByText(description) })
     }
 
-    async returnTotalVisit(petName: string) {
-        return this.page.locator('app-pet-list', { has: this.page.getByText(petName) }).getByRole('button', { name: "Edit Visit" })
+    async validateVisitCountByPetName(petName: string, visitCount: number) {
+        await expect(this.page.locator('app-pet-list', { has: this.page.getByText(petName) })
+            .locator('app-visit-list tr:not(:first-child)')).toHaveCount(visitCount)
     }
 }
