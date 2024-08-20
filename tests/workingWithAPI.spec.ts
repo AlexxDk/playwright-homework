@@ -39,7 +39,11 @@ test.describe('veterinarians page', async () => {
     await page.route('*/**/api/vets', async route => {
       const response = await route.fetch()
       const responseBody = await response.json()
-      responseBody[5].specialties = specialties
+      responseBody.map(veterinarian => {
+        if (veterinarian.firstName == 'Sharon' && veterinarian.lastName == 'Jenkins') {
+          veterinarian.specialties = specialties
+        }
+      })
 
       await route.fulfill({
         body: JSON.stringify(responseBody)
