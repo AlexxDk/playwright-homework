@@ -15,8 +15,13 @@ export class VeterinariansPage {
             await expect(specialtyRow).toContainText(specialty)
         }
     }
-    
+
     async selectEditVetByName(veterinarianName: string) {
         await this.page.locator('tr', { has: this.page.getByText(veterinarianName) }).getByRole('button', { name: 'Edit Vet' }).click()
+    }
+
+    async validateSpecialtiesCountByVeterinarianName(VeterinarianName: string, SpecialtiesCount: number) {
+        await expect(this.page.locator('tr', { has: this.page.getByText(VeterinarianName) })
+            .locator('td').nth(1).locator('div')).toHaveCount(SpecialtiesCount)
     }
 }
