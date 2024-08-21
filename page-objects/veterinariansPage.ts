@@ -7,6 +7,11 @@ export class VeterinariansPage {
         this.page = page
     }
 
+    /**
+     * 
+     * @param veterinarianName 
+     * @param specialty - specialtyName or 'empty' if need to check that veterinarian does not have specialties assigned
+     */
     async validateSpecialtyForVeterinarian(veterinarianName: string, specialty: string) {
         const specialtyRow = this.page.getByRole('row', { name: veterinarianName }).locator('td').nth(1)
         if (specialty == 'empty') {

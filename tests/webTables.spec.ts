@@ -82,7 +82,7 @@ test('Validate specialty lists', async ({ page }) => {
     await pm.navigateTo().veterinariansPage()
 
     await pm.onVeterinariansPage().selectEditVetByName(' Sharon Jenkins ')
-    await pm.onEditVeterinariansPage().updateVetTo('oncology', allSpecialtiesOnTheVeterinarianPage)
+    await pm.onEditVeterinariansPage().validateDropdownListAndUpdateVetTo('oncology', allSpecialtiesOnTheVeterinarianPage)
     await pm.onVeterinariansPage().validateSpecialtyForVeterinarian(' Sharon Jenkins ', 'oncology')
 
     await pm.navigateTo().specialtiesPage()

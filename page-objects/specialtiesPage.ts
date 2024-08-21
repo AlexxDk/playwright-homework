@@ -47,5 +47,4 @@ export class SpecialtiesPage {
         await expect(this.page.getByRole('textbox').last()).not.toHaveValue(specialtyName)
     }
 
-    
 }

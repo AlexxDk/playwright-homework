@@ -35,5 +35,42 @@ test('Delete specialty validation', async ({ page, request }) => {
     await pm.onSpecialtiesPage().validateLastAddedSpecialtyByName('api testing expert')
     await pm.onSpecialtiesPage().deleteLastSpecialty()
     await pm.onSpecialtiesPage().validateLastAddedSpecialtyByNameIsDeleted('api testing expert')
+})
 
+test('Add and delete veterinarian', async ({ page, request }) => {
+    const vetsResponse = await request.post('https://petclinic-api.bondaracademy.com/petclinic/api/vets', {
+        headers: {
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+        },
+        data: { "id": null, "firstName": "Donatello", "lastName": "Smith", "specialties": [] }
+    })
+    const responseBody = await vetsResponse.json()
+    const id = responseBody.id
+    const firstName = responseBody.firstName
+    expect(vetsResponse.status()).toEqual(201)
+    expect(firstName).toEqual('Donatello')
+
+    const pm = new PageManager(page)
+    await pm.navigateTo().veterinariansPage()
+    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian('Donatello Smith', 'empty')
+    await pm.onVeterinariansPage().selectEditVetByName('Donatello Smith')
+    await pm.onEditVeterinariansPage().addSpecialty('dentistry')
+    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian('Donatello Smith', 'dentistry')
+
+    const deleteVetsResponse = await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/vets/${id}`, {
+        headers: {
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+        }
+    })
+    expect(deleteVetsResponse.status()).toEqual(204)
+
+    const getVetsResponse = await request.get('https://petclinic-api.bondaracademy.com/petclinic/api/vets', {
+        headers: {
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+        }
+    })
+    const responseVetsBody = await getVetsResponse.json()
+    expect(responseVetsBody.every(vet => {
+        return vet.firstName !== 'Donatello' && vet.lastName !== 'Smith'
+    })).toBe(true)
 })
