@@ -1,23 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { PageManager } from '../page-objects/pageManager';
-import owners from '../test-data/owners.json'
-import specialties from '../test-data/specialties.json'
 
 
 test.beforeEach(async ({ page }) => {
-    // await page.route('*/**/api/owners', async route => {
-
-    //   await route.fulfill({
-    //     body: JSON.stringify(owners)
-    //   })
-    // })
-    // await page.route(`*/**/api/owners/${owners[0].id}`, async route => {
-
-    //   await route.fulfill({
-    //     body: JSON.stringify(owners[0])
-    //   })
-    // })
-
     await page.goto("/");
 })
 
@@ -54,7 +39,7 @@ test('Add and delete veterinarian', async ({ page, request }) => {
     await pm.navigateTo().veterinariansPage()
     await pm.onVeterinariansPage().validateSpecialtyForVeterinarian('Donatello Smith', 'empty')
     await pm.onVeterinariansPage().selectEditVetByName('Donatello Smith')
-    await pm.onEditVeterinariansPage().addSpecialty('dentistry')
+    await pm.onEditVeterinariansPage().updateSpecialtyTo('dentistry')
     await pm.onVeterinariansPage().validateSpecialtyForVeterinarian('Donatello Smith', 'dentistry')
 
     const deleteVetsResponse = await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/vets/${id}`, {
@@ -73,4 +58,50 @@ test('Add and delete veterinarian', async ({ page, request }) => {
     expect(responseVetsBody.every(vet => {
         return vet.firstName !== 'Donatello' && vet.lastName !== 'Smith'
     })).toBe(true)
+})
+
+test('New specialty is displayed', async ({ page, request }) => {
+    const specialtiesResponse = await request.post('https://petclinic-api.bondaracademy.com/petclinic/api/specialties', {
+        headers: {
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+        },
+        data: { "name": "api testing ninja" }
+    })
+    const specialtiesResponseBody = await specialtiesResponse.json()
+    const specialtyId = specialtiesResponseBody.id
+    expect(specialtiesResponse.status()).toEqual(201)
+
+    const vetsResponse = await request.post('https://petclinic-api.bondaracademy.com/petclinic/api/vets', {
+        headers: {
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+        },
+        data: { "id": null, "firstName": "Mikelangelo", "lastName": "Smith", "specialties": [{ id: 171, name: "surgery" }] }
+    })
+    expect(vetsResponse.status()).toEqual(201)
+    const vetsResponseBody = await vetsResponse.json()
+    const vetsId = vetsResponseBody.id
+
+    const pm = new PageManager(page)
+    await pm.navigateTo().veterinariansPage()
+    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian('Mikelangelo Smith', 'surgery')
+    await pm.onVeterinariansPage().selectEditVetByName('Mikelangelo Smith')
+    await pm.onEditVeterinariansPage().updateSpecialtyTo('api testing ninja')
+    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian('Mikelangelo Smith', 'api testing ninja')
+
+    const deleteVetsResponse = await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/vets/${vetsId}`, {
+        headers: {
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+        }
+    })
+    expect(deleteVetsResponse.status()).toEqual(204)
+
+    const deleteSpecialtyResponse = await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/specialties/${specialtyId}`, {
+        headers: {
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+        }
+    })
+    expect(deleteSpecialtyResponse.status()).toEqual(204)
+
+    await pm.navigateTo().specialtiesPage()
+    await pm.onSpecialtiesPage().validateLastAddedSpecialtyByNameIsDeleted('api testing ninja')
 })
