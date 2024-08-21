@@ -35,7 +35,17 @@ export class SpecialtiesPage {
         return specialtiesList
     }
 
-    async deleteLastSpecialty(){
+    async deleteLastSpecialty() {
         await this.page.locator('tbody tr').last().getByRole('button', { name: "Delete" }).click()
     }
+
+    async validateLastAddedSpecialtyByName(specialtyName: string) {
+        await expect(this.page.getByRole('textbox').last()).toHaveValue(specialtyName)
+    }
+
+    async validateLastAddedSpecialtyByNameIsDeleted(specialtyName: string) {
+        await expect(this.page.getByRole('textbox').last()).not.toHaveValue(specialtyName)
+    }
+
+    
 }
