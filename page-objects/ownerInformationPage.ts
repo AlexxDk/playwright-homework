@@ -77,4 +77,9 @@ export class OwnerInformationPage extends HelperBase {
     private returnVisitRowByPetAndDescription(petName: string, description: string) {
         return this.page.locator('app-pet-list', { has: this.page.getByText(petName) }).locator('app-visit-list').locator('tr', { has: this.page.getByText(description) })
     }
+
+    async validateVisitCountByPetName(petName: string, visitCount: number) {
+        await expect(this.page.locator('app-pet-list', { has: this.page.getByText(petName) })
+            .locator('app-visit-list tr:not(:first-child)')).toHaveCount(visitCount)
+    }
 }
