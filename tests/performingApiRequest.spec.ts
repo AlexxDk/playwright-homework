@@ -71,11 +71,20 @@ test('New specialty is displayed', async ({ page, request }) => {
     const specialtyId = specialtiesResponseBody.id
     expect(specialtiesResponse.status()).toEqual(201)
 
+    const getSpecialtiesResponse = await request.get('https://petclinic-api.bondaracademy.com/petclinic/api/specialties', {
+        headers: {
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+        }
+    })
+    const getSpecialtiesResponseBody = await getSpecialtiesResponse.json()
+    const getSpecialty = getSpecialtiesResponseBody.find(spec => { return spec.name == 'surgery' })
+    expect(getSpecialtiesResponse.status()).toEqual(200)
+
     const vetsResponse = await request.post('https://petclinic-api.bondaracademy.com/petclinic/api/vets', {
         headers: {
             Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
         },
-        data: { "id": null, "firstName": "Mikelangelo", "lastName": "Smith", "specialties": [{ id: 171, name: "surgery" }] }
+        data: { "id": null, "firstName": "Mikelangelo", "lastName": "Smith", "specialties": [{ id: `${getSpecialty.id}`, name: `${getSpecialty.name}` }] }
     })
     expect(vetsResponse.status()).toEqual(201)
     const vetsResponseBody = await vetsResponse.json()
