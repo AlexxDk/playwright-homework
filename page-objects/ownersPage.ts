@@ -45,4 +45,19 @@ export class OwnersPage {
         await this.page.getByRole('link', { name: ownerName }).click()
         await expect(this.page.locator('.ownerFullName')).toHaveText(ownerName)
     }
+
+    async openAddNewOwner() {
+        await this.page.getByRole('button', { name: 'Add Owner' }).click()
+    }
+
+    async validateOwnerInfoInTheTable(ownerName: string, address: string, city: string, telephone: string) {
+        const ownerRow = this.page.getByRole('row', { name: ownerName })
+        await expect(ownerRow.locator('td').nth(1)).toContainText(address)
+        await expect(ownerRow.locator('td').nth(2)).toContainText(city)
+        await expect(ownerRow.locator('td').nth(3)).toContainText(telephone)
+    }
+
+    async ownerNoExistInTheList(ownerName: string) {
+        await expect(this.page.getByRole('row', { name: ownerName })).toHaveCount(0)
+    }
 }

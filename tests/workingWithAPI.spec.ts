@@ -60,3 +60,33 @@ test.describe('veterinarians page', async () => {
     await pm.onVeterinariansPage().validateSpecialtiesCountByVeterinarianName('Sharon Jenkins', 10)
   })
 })
+
+test.describe('owner page - intercept Browser API response', async () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/");
+    const pm = new PageManager(page)
+    await pm.navigateTo().ownersPage()
+  })
+
+  test('Delete specialty validation', async ({ page, request }) => {
+    const pm = new PageManager(page)
+    await pm.onOwnersPage().openAddNewOwner()
+    await pm.onAddNewOwnerPage().addOwner('Donatello', 'Smith', 'USA', 'New York', '87654321')
+
+    const ownersResponse = await page.waitForResponse('https://petclinic-api.bondaracademy.com/petclinic/api/owners')
+    const ownersResponseBody = await ownersResponse.json()
+    const ownerID = ownersResponseBody.id
+
+    await pm.onOwnersPage().validateOwnerInfoInTheTable('Donatello Smith', 'USA', 'New York', '87654321')
+
+    const deleteOwnerResponse = await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerID}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+      }
+    })
+    expect(deleteOwnerResponse.status()).toEqual(204)
+
+    await page.goto("/owners");
+    await pm.onOwnersPage().ownerNoExistInTheList('Donatello Smith')
+  })
+})
