@@ -1,32 +1,36 @@
-import {faker} from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 
 export class TestDataGeneration {
 
-    randomOwnerName(){
-        return faker.person.fullName()
+    static randomOwnerFirstName(): string {
+        return faker.person.firstName()
     }
 
-    randomOwnerAddress(){
+    static randomOwnerLastName(): string {
+        return faker.person.lastName()
+    }
+
+    static randomOwnerAddress(): string {
         return faker.location.streetAddress({ useFullAddress: true })
     }
 
-    randomOwnerCity(){
+    static randomOwnerCity(): string {
         return faker.location.city()
     }
 
-    randomOwnerPhoneNumber(){
-        return faker.phone.number()
+    static randomOwnerPhoneNumber(): string {
+        return faker.phone.number('##########')
     }
 
-    randomPetName(){
+    static randomPetName(): string {
         return faker.animal.cat()
     }
 
-    randomVeterinariansName(){
-        return faker.person.fullName()
+    static randomDescriptionForThePetVisit(): string {
+        return faker.lorem.sentence(5)
     }
 
-    randomDescriptionForThePetVisit(){
-        return faker.lorem.sentence(5)
+    static randomSpecialtyName(): string {
+        return faker.commerce.department()
     }
 }
