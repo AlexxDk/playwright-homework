@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { PageManager } from '../page-objects/pageManager';
 import owners from '../test-data/owners.json'
 import specialties from '../test-data/specialties.json'
+import { TestDataGeneration } from "../test-data/TestDataGeneration";
 
 test.describe('owners page', async () => {
   test.beforeEach(async ({ page }) => {
@@ -69,15 +70,21 @@ test.describe('owner page - intercept Browser API response', async () => {
   })
 
   test('Delete specialty validation', async ({ page, request }) => {
+    const randomOwnerFirstName = TestDataGeneration.randomOwnerFirstName()
+    const randomOwnerLastName = TestDataGeneration.randomOwnerLastName()
+    const randomOwnerAddress = TestDataGeneration.randomOwnerAddress()
+    const randomOwnerCity = TestDataGeneration.randomOwnerCity()
+    const randomOwnerPhoneNumber = TestDataGeneration.randomOwnerPhoneNumber()
+
     const pm = new PageManager(page)
     await pm.onOwnersPage().openAddNewOwner()
-    await pm.onAddNewOwnerPage().addOwner('Donatello', 'Smith', 'USA', 'New York', '87654321')
+    await pm.onAddNewOwnerPage().addOwner(randomOwnerFirstName, randomOwnerLastName, randomOwnerAddress, randomOwnerCity, randomOwnerPhoneNumber)
 
     const ownersResponse = await page.waitForResponse('https://petclinic-api.bondaracademy.com/petclinic/api/owners')
     const ownersResponseBody = await ownersResponse.json()
     const ownerID = ownersResponseBody.id
 
-    await pm.onOwnersPage().validateOwnerInfoInTheTable('Donatello Smith', 'USA', 'New York', '87654321')
+    await pm.onOwnersPage().validateOwnerInfoInTheTable(`${randomOwnerFirstName} ${randomOwnerLastName}`, randomOwnerAddress, randomOwnerCity, randomOwnerPhoneNumber)
 
     const deleteOwnerResponse = await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerID}`, {
       headers: {
@@ -87,6 +94,6 @@ test.describe('owner page - intercept Browser API response', async () => {
     expect(deleteOwnerResponse.status()).toEqual(204)
 
     await page.goto("/owners");
-    await pm.onOwnersPage().ownerNoExistInTheList('Donatello Smith')
+    await pm.onOwnersPage().ownerNoExistInTheList(`${randomOwnerFirstName} ${randomOwnerLastName}`)
   })
 })

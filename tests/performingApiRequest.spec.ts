@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { PageManager } from '../page-objects/pageManager';
+import { TestDataGeneration } from "../test-data/TestDataGeneration";
 
 
 test.beforeEach(async ({ page }) => {
@@ -7,40 +8,45 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('Delete specialty validation', async ({ page, request }) => {
+    const randomSpecialtyName = TestDataGeneration.randomSpecialtyName()
+
     const specialtiesResponse = await request.post('https://petclinic-api.bondaracademy.com/petclinic/api/specialties', {
         headers: {
             Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
         },
-        data: { "name": "api testing expert" }
+        data: { "name": randomSpecialtyName }
     })
     expect(specialtiesResponse.status()).toEqual(201)
 
     const pm = new PageManager(page)
     await pm.navigateTo().specialtiesPage()
-    await pm.onSpecialtiesPage().validateLastAddedSpecialtyByName('api testing expert')
+    await pm.onSpecialtiesPage().validateLastAddedSpecialtyByName(randomSpecialtyName)
     await pm.onSpecialtiesPage().deleteLastSpecialty()
-    await pm.onSpecialtiesPage().validateLastAddedSpecialtyByNameIsDeleted('api testing expert')
+    await pm.onSpecialtiesPage().validateLastAddedSpecialtyByNameIsDeleted(randomSpecialtyName)
 })
 
 test('Add and delete veterinarian', async ({ page, request }) => {
+    const randomOwnerFirstName = TestDataGeneration.randomOwnerFirstName()
+    const randomOwnerLastName = TestDataGeneration.randomOwnerLastName()
+
     const vetsResponse = await request.post('https://petclinic-api.bondaracademy.com/petclinic/api/vets', {
         headers: {
             Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
         },
-        data: { "id": null, "firstName": "Donatello", "lastName": "Smith", "specialties": [] }
+        data: { "id": null, "firstName": randomOwnerFirstName, "lastName": randomOwnerLastName, "specialties": [] }
     })
     const responseBody = await vetsResponse.json()
     const id = responseBody.id
     const firstName = responseBody.firstName
     expect(vetsResponse.status()).toEqual(201)
-    expect(firstName).toEqual('Donatello')
+    expect(firstName).toEqual(randomOwnerFirstName)
 
     const pm = new PageManager(page)
     await pm.navigateTo().veterinariansPage()
-    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian('Donatello Smith', 'empty')
-    await pm.onVeterinariansPage().selectEditVetByName('Donatello Smith')
+    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian(`${randomOwnerFirstName} ${randomOwnerLastName}`, 'empty')
+    await pm.onVeterinariansPage().selectEditVetByName(`${randomOwnerFirstName} ${randomOwnerLastName}`)
     await pm.onEditVeterinariansPage().updateSpecialtyTo('dentistry')
-    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian('Donatello Smith', 'dentistry')
+    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian(`${randomOwnerFirstName} ${randomOwnerLastName}`, 'dentistry')
 
     const deleteVetsResponse = await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/vets/${id}`, {
         headers: {
@@ -56,16 +62,20 @@ test('Add and delete veterinarian', async ({ page, request }) => {
     })
     const responseVetsBody = await getVetsResponse.json()
     expect(responseVetsBody.every(vet => {
-        return vet.firstName !== 'Donatello' && vet.lastName !== 'Smith'
+        return vet.firstName !== randomOwnerFirstName && vet.lastName !== randomOwnerLastName
     })).toBe(true)
 })
 
 test('New specialty is displayed', async ({ page, request }) => {
+    const randomSpecialtyName = TestDataGeneration.randomSpecialtyName()
+    const randomOwnerFirstName = TestDataGeneration.randomOwnerFirstName()
+    const randomOwnerLastName = TestDataGeneration.randomOwnerLastName()
+    
     const specialtiesResponse = await request.post('https://petclinic-api.bondaracademy.com/petclinic/api/specialties', {
         headers: {
             Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
         },
-        data: { "name": "api testing ninja" }
+        data: { "name": randomSpecialtyName }
     })
     const specialtiesResponseBody = await specialtiesResponse.json()
     const specialtyId = specialtiesResponseBody.id
@@ -84,7 +94,7 @@ test('New specialty is displayed', async ({ page, request }) => {
         headers: {
             Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
         },
-        data: { "id": null, "firstName": "Mikelangelo", "lastName": "Smith", "specialties": [{ id: `${getSpecialty.id}`, name: `${getSpecialty.name}` }] }
+        data: { "id": null, "firstName": randomOwnerFirstName, "lastName": randomOwnerLastName, "specialties": [{ id: `${getSpecialty.id}`, name: `${getSpecialty.name}` }] }
     })
     expect(vetsResponse.status()).toEqual(201)
     const vetsResponseBody = await vetsResponse.json()
@@ -92,10 +102,10 @@ test('New specialty is displayed', async ({ page, request }) => {
 
     const pm = new PageManager(page)
     await pm.navigateTo().veterinariansPage()
-    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian('Mikelangelo Smith', 'surgery')
-    await pm.onVeterinariansPage().selectEditVetByName('Mikelangelo Smith')
-    await pm.onEditVeterinariansPage().updateSpecialtyTo('api testing ninja')
-    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian('Mikelangelo Smith', 'api testing ninja')
+    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian(`${randomOwnerFirstName} ${randomOwnerLastName}`, 'surgery')
+    await pm.onVeterinariansPage().selectEditVetByName(`${randomOwnerFirstName} ${randomOwnerLastName}`)
+    await pm.onEditVeterinariansPage().updateSpecialtyTo(randomSpecialtyName)
+    await pm.onVeterinariansPage().validateSpecialtyForVeterinarian(`${randomOwnerFirstName} ${randomOwnerLastName}`, randomSpecialtyName)
 
     const deleteVetsResponse = await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/vets/${vetsId}`, {
         headers: {
@@ -112,5 +122,5 @@ test('New specialty is displayed', async ({ page, request }) => {
     expect(deleteSpecialtyResponse.status()).toEqual(204)
 
     await pm.navigateTo().specialtiesPage()
-    await pm.onSpecialtiesPage().validateLastAddedSpecialtyByNameIsDeleted('api testing ninja')
+    await pm.onSpecialtiesPage().validateLastAddedSpecialtyByNameIsDeleted(randomSpecialtyName)
 })
