@@ -51,7 +51,6 @@ export const test = base.extend<TestOptions>({
     },
 
     pageManager: async ({ page, ownerWithPetAndVisitSetup }, use) => {
-        const pm = new PageManager(page)
-        await use(pm)
+        await use(new PageManager(page))
     }
 })
