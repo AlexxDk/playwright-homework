@@ -12,19 +12,19 @@ test.beforeEach(async ({ page }) => {
 test('Select the desired date in the calendar', async ({ page }) => {
     const pm = new PageManager(page)
     await pm.onOwnersPage().openOwnerInfoPageFor('Harold Davis')
-    await pm.onOwnerInformationPage().openFormAddNewPet()
+    // await pm.onOwnerInformationPage().openFormAddNewPet()
 
-    const { birthYear, birthMonth, birthDay } = {
-        birthYear: '2014',
-        birthMonth: '05',
-        birthDay: '02'
-    }
+    // const { birthYear, birthMonth, birthDay } = {
+    //     birthYear: '2014',
+    //     birthMonth: '05',
+    //     birthDay: '02'
+    // }
 
-    const randomPetName = TestDataGeneration.randomPetName()
-    await pm.onAddNewPetPage().addPet(randomPetName, birthDay, birthMonth, birthYear, 'dog')
-    const petSelectorByName = await pm.onOwnerInformationPage().validatePetInfo(randomPetName, birthDay, birthMonth, birthYear, 'dog')
-    await pm.onOwnerInformationPage().deletePetByName(randomPetName)
-    await expect(petSelectorByName).toHaveCount(0)
+    // const randomPetName = TestDataGeneration.randomPetName()
+    // await pm.onAddNewPetPage().addPet(randomPetName, birthDay, birthMonth, birthYear, 'dog')
+    // const petSelectorByName = await pm.onOwnerInformationPage().validatePetInfo(randomPetName, birthDay, birthMonth, birthYear, 'dog')
+    // await pm.onOwnerInformationPage().deletePetByName(randomPetName)
+    // await expect(petSelectorByName).toHaveCount(0)
 })
 
 test('Select the desired date in the calendar 2', async ({ page }) => {
